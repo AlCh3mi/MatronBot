@@ -19,10 +19,26 @@ namespace MatronBot.Commands {
             };
             await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
         }
-        
-        [Command("Tubs")]
-        public async Task Tubs(CommandContext ctx) {
-            await ctx.Member.SendMessageAsync("DA BOOOOMB!!!!!").ConfigureAwait(false);
+
+        [Command("FlipCoin")]
+        public async Task coinFlip(CommandContext ctx) {
+            var random = new Random();
+            var trueOrFalse = random.Next(2);
+            var response = trueOrFalse switch {
+                0 => "Heads!",
+                1 => "Tails!",
+                _ => string.Empty
+            };
+            
+            await ctx.Channel.SendMessageAsync(response);
+        }
+
+        [Command("RollDice")]
+        public async Task RollDice(CommandContext ctx, int sides) {
+
+            var random = new Random();
+            var result = random.Next(sides) + 1;
+            await ctx.Channel.SendMessageAsync("You rolled: " + result);
         }
     }
 }
