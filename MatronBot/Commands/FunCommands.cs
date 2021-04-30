@@ -1,29 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
-using Newtonsoft.Json;
 
 namespace MatronBot.Commands {
     public class FunCommands : BaseCommandModule {
         
-        readonly string savePath = Path.Combine(Directory.GetCurrentDirectory(), "BotIdeas.orphan");
-
-        List<string> botIdeas;
-        
         [Command("Hello")]
         public async Task Greet(CommandContext ctx) {
-            
-            botIdeas = new List<string>();
-            if (botIdeas.Count < 1)
-                await Load(savePath);
-            
+
             var response = string.Empty;
-            Random random = new Random();
+            var random = new Random();
             response = random.Next(1, 5) switch {
                 1 => "Greetings!",
                 2 => "Ma se kind!!!!!",
@@ -70,19 +59,8 @@ namespace MatronBot.Commands {
         //     await ctx.Channel.SendMessageAsync(message.Result.Content).ConfigureAwait(false);
         //     await ctx.Channel.SendMessageAsync("Ill think about it...").ConfigureAwait(false);
         //
-        //     if (botIdeas.Count < 1)
-        //         await Load(savePath);
-        //     
         //     botIdeas.Add(message.Result.Content);
         //     
-        //     await Save(savePath);
-        // }
-
-        // [Command("ideas")]
-        // public async Task ShowIdeas(CommandContext ctx) {
-        //     foreach (var idea in botIdeas) {
-        //         await ctx.Channel.SendMessageAsync(idea).ConfigureAwait(false);
-        //     }
         // }
         
         //todo: turn this into something meaningful
@@ -157,17 +135,6 @@ namespace MatronBot.Commands {
                 x.User == ctx.User &&
                 (x.Emoji == thumbsUpEmoji || x.Emoji == thumbsDownEmoji))
                 .ConfigureAwait(false);
-        }
-        
-        async Task Save(string path) {
-            await using var sw = new StreamWriter(path);
-            await sw.WriteAsync(JsonConvert.SerializeObject(botIdeas));
-        }
-        
-        async Task Load(string path) {
-            using var sr = new StreamReader(path);
-            var tmp = await sr.ReadToEndAsync().ConfigureAwait(false);
-            botIdeas = JsonConvert.DeserializeObject<List<string>>(tmp);
         }
     }
 }

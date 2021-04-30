@@ -6,7 +6,7 @@ using DSharpPlus.CommandsNext.Attributes;
 namespace MatronBot.Commands {
     public class DeathCounter : BaseCommandModule {
         
-        Dictionary<string, int> necronomicon = new Dictionary<string, int>();
+        Dictionary<string, int> necronomicon = new();
         
         [Command("Death")] 
         public async Task Death(CommandContext ctx) {
@@ -17,6 +17,7 @@ namespace MatronBot.Commands {
             }
             await DeathCount(ctx);
         }
+        
         [Command("DeathCount")] 
         public async Task DeathCount(CommandContext ctx){
             await ctx.Channel.SendMessageAsync($"{ctx.User.Username} Deaths: {necronomicon[ctx.User.Username]}").ConfigureAwait(false);
