@@ -56,7 +56,6 @@ namespace MatronBot {
             Commands.RegisterCommands<ApexLegends>();
             Commands.RegisterCommands<DeathCounter>();
             Commands.RegisterCommands<FunCommands>();
-            //Commands.RegisterCommands<Quotes>();
             
             await Client.ConnectAsync();
             await Task.Delay(-1);

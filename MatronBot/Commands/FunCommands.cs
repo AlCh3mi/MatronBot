@@ -23,8 +23,24 @@ namespace MatronBot.Commands {
 
             await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
         }
+        
+        [Command("ping")] 
+        [Description("Displays user who issued commands latency to current server.")]
+        public async Task Ping(CommandContext ctx) // this command takes no arguments
+        {
+            // let's trigger a typing indicator to let
+            // users know we're working
+            await ctx.TriggerTypingAsync();
+
+            // let's make the message a bit more colourful
+            var emoji = DiscordEmoji.FromName(ctx.Client, ":ping_pong:");
+            
+            await ctx.RespondAsync($"{emoji} Pong! Ping: {ctx.Client.Ping}ms");
+        }
 
         [Command("FlipCoin")]
+        [Description("Heads or Tails!")]
+        [Aliases("CoinFlip")]
         public async Task CoinFlip(CommandContext ctx) {
             var random = new Random();
             var trueOrFalse = random.Next(2);
@@ -85,7 +101,7 @@ namespace MatronBot.Commands {
             var embed = new DiscordEmbedBuilder {
                 Title = "RATE THIS:",
                 Description = desc,
-                Color = DiscordColor.Grayple
+                Color = DiscordColor.Gold
             };
             
             var interactivity = ctx.Client.GetInteractivity();
