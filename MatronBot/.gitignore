@@ -1,0 +1,4 @@
+#Rider
+*.idea/
+obj/
+bin/

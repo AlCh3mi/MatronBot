@@ -1,13 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
+using Newtonsoft.Json;
 
 namespace MatronBot.Commands {
     public class FunCommands : BaseCommandModule {
         
+        readonly string savePath = Path.Combine(Directory.GetCurrentDirectory(), "BotIdeas.orphan");
+
+        List<string> botIdeas;
+        
         [Command("Hello")]
-        public async Task Sup(CommandContext ctx) {
+        public async Task Greet(CommandContext ctx) {
+            
+            botIdeas = new List<string>();
+            if (botIdeas.Count < 1)
+                await Load(savePath);
+            
             var response = string.Empty;
             Random random = new Random();
             response = random.Next(1, 5) switch {
@@ -17,11 +31,12 @@ namespace MatronBot.Commands {
                 4 => "is it me you're looking for! I can see it in your eyes, I can see it in your smile.. ",
                 _ => response
             };
+
             await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
         }
 
         [Command("FlipCoin")]
-        public async Task coinFlip(CommandContext ctx) {
+        public async Task CoinFlip(CommandContext ctx) {
             var random = new Random();
             var trueOrFalse = random.Next(2);
             var response = trueOrFalse switch {
@@ -39,6 +54,120 @@ namespace MatronBot.Commands {
             var random = new Random();
             var result = random.Next(sides) + 1;
             await ctx.Channel.SendMessageAsync("You rolled: " + result);
+        }
+
+        // [Command("idea")]
+        // public async Task Idea(CommandContext ctx) {
+        //     var interactivity = ctx.Client.GetInteractivity();
+        //
+        //     await ctx.Channel.SendMessageAsync("I dont do enough around here? what else would you like me to do?").ConfigureAwait(false);
+        //
+        //     var message = await interactivity.WaitForMessageAsync(x => 
+        //             x.Channel == ctx.Channel && 
+        //             x.Author == ctx.User)
+        //         .ConfigureAwait(false);
+        //     
+        //     await ctx.Channel.SendMessageAsync(message.Result.Content).ConfigureAwait(false);
+        //     await ctx.Channel.SendMessageAsync("Ill think about it...").ConfigureAwait(false);
+        //
+        //     if (botIdeas.Count < 1)
+        //         await Load(savePath);
+        //     
+        //     botIdeas.Add(message.Result.Content);
+        //     
+        //     await Save(savePath);
+        // }
+
+        // [Command("ideas")]
+        // public async Task ShowIdeas(CommandContext ctx) {
+        //     foreach (var idea in botIdeas) {
+        //         await ctx.Channel.SendMessageAsync(idea).ConfigureAwait(false);
+        //     }
+        // }
+        
+        //todo: turn this into something meaningful
+        // [Command("Reaction")]
+        // public async Task Reaction(CommandContext ctx) {
+        //     var interactivity = ctx.Client.GetInteractivity();
+        //
+        //     var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel).ConfigureAwait(false);
+        //
+        //     await ctx.Channel.SendMessageAsync(message.Result.Emoji);
+        // }
+        
+        [Command("Rate")]
+        public async Task Rate(CommandContext ctx, params string[] question) {
+            
+            var desc = string.Empty;
+
+            foreach (var word in question) {
+                desc += $"{word} ";
+            }
+            
+            var embed = new DiscordEmbedBuilder {
+                Title = "RATE THIS:",
+                Description = desc,
+                Color = DiscordColor.Grayple
+            };
+            
+            var interactivity = ctx.Client.GetInteractivity();
+            
+            var message = await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
+            
+            var one = DiscordEmoji.FromName(ctx.Client, ":one:");
+            var two = DiscordEmoji.FromName(ctx.Client, ":two:");
+            var three = DiscordEmoji.FromName(ctx.Client, ":three:");
+            var four = DiscordEmoji.FromName(ctx.Client, ":four:");
+            var five = DiscordEmoji.FromName(ctx.Client, ":five:");
+            
+            await message.CreateReactionAsync(one).ConfigureAwait(false);
+            await message.CreateReactionAsync(two).ConfigureAwait(false);
+            await message.CreateReactionAsync(three).ConfigureAwait(false);
+            await message.CreateReactionAsync(four).ConfigureAwait(false);
+            await message.CreateReactionAsync(five).ConfigureAwait(false);
+        }
+        
+        [Command("Poll")]
+        public async Task Poll(CommandContext ctx, params string[] question) {
+
+            var desc = string.Empty;
+
+            foreach (var word in question) {
+                desc += $"{word} ";
+            }
+            
+            var joinEmbed = new DiscordEmbedBuilder {
+                Title = "POLL:",
+                Description = desc,
+                Color = DiscordColor.Purple
+            };
+
+            var joinMessage = await ctx.Channel.SendMessageAsync(embed: joinEmbed).ConfigureAwait(false);
+
+            var thumbsUpEmoji = DiscordEmoji.FromName(ctx.Client, ":+1:");
+            var thumbsDownEmoji = DiscordEmoji.FromName(ctx.Client, ":-1:");
+
+            await joinMessage.CreateReactionAsync(thumbsUpEmoji).ConfigureAwait(false);
+            await joinMessage.CreateReactionAsync(thumbsDownEmoji).ConfigureAwait(false);
+
+            var interactivity = ctx.Client.GetInteractivity();
+
+            var reactionResult = await interactivity.WaitForReactionAsync(x =>
+                x.Message == joinMessage &&
+                x.User == ctx.User &&
+                (x.Emoji == thumbsUpEmoji || x.Emoji == thumbsDownEmoji))
+                .ConfigureAwait(false);
+        }
+        
+        async Task Save(string path) {
+            await using var sw = new StreamWriter(path);
+            await sw.WriteAsync(JsonConvert.SerializeObject(botIdeas));
+        }
+        
+        async Task Load(string path) {
+            using var sr = new StreamReader(path);
+            var tmp = await sr.ReadToEndAsync().ConfigureAwait(false);
+            botIdeas = JsonConvert.DeserializeObject<List<string>>(tmp);
         }
     }
 }
