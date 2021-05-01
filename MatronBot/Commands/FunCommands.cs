@@ -23,6 +23,12 @@ namespace MatronBot.Commands {
 
             await ctx.Channel.SendMessageAsync(response).ConfigureAwait(false);
         }
+
+        [Command("RickRoll")]
+        [Description("You know the rules and so do I...")]
+        public async Task RickRoll(CommandContext ctx) {
+            await ctx.Channel.SendMessageAsync("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        }
         
         [Command("ping")] 
         [Description("Displays user who issued commands latency to current server.")]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -60,6 +61,12 @@ namespace MatronBot.Commands {
             await ctx.Channel.SendMessageAsync($"Apex Wins Saved to {savePath}");
         }
 
+        [Command("ApexMap")]
+        public async Task ApexMap(CommandContext ctx) {
+            var response = await ApiRequest("https://api.mozambiquehe.re/maprotation?auth=X8MmHiCTDGB3tCgZe0iv");
+            await ctx.Channel.SendMessageAsync(response);
+        }
+
         async Task Save(string path) {
             await using var sw = new StreamWriter(path);
             await sw.WriteAsync(JsonConvert.SerializeObject(apexWins));
@@ -70,5 +77,19 @@ namespace MatronBot.Commands {
             var tmp = await sr.ReadToEndAsync().ConfigureAwait(false);
             apexWins = JsonConvert.DeserializeObject<Dictionary<string, int>>(tmp);
         }
+        
+        async Task<string> ApiRequest(string url)
+        {
+            ServicePointManager.ServerCertificateValidationCallback = 
+                (a, b, c, d) => true;            
+
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            var resp = (HttpWebResponse) await req.GetResponseAsync();
+            using var sr = new StreamReader(resp.GetResponseStream());
+            var results = await sr.ReadToEndAsync();
+            return results;
+        }
+        
+        //Hi olpan
     }
 }
