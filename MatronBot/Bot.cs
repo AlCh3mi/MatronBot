@@ -53,7 +53,7 @@ namespace MatronBot {
 
             Commands = Client.UseCommandsNext(commandsConfig);
             
-            Commands.RegisterCommands<ApexLegends>();
+            Commands.RegisterCommands<ApexCommands>();
             Commands.RegisterCommands<DeathCounter>();
             Commands.RegisterCommands<FunCommands>();
             
