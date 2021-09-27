@@ -56,6 +56,7 @@ namespace MatronBot {
             Commands.RegisterCommands<ApexCommands>();
             Commands.RegisterCommands<DeathCounter>();
             Commands.RegisterCommands<FunCommands>();
+            Commands.RegisterCommands<WarframeCommands>();
             
             await Client.ConnectAsync();
             await Task.Delay(-1);
