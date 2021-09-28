@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 
-namespace WarframeAPI.WorldState
+namespace MatronBot.Warframe.WorldState
 {
     public class VoidTrader
     {

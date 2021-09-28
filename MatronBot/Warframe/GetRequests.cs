@@ -1,4 +1,4 @@
-﻿namespace WarframeAPI
+﻿namespace MatronBot.Warframe
 {
     public static class GetRequests
     {

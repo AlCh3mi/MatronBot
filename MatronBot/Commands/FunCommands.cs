@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
+using MatronBot.Jokes;
 
 namespace MatronBot.Commands {
     public class FunCommands : BaseCommandModule {
@@ -30,17 +33,12 @@ namespace MatronBot.Commands {
             await ctx.Channel.SendMessageAsync("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
         }
         
-        [Command("ping")] 
+        [Command("Ping")] 
         [Description("Displays user who issued commands latency to current server.")]
         public async Task Ping(CommandContext ctx) // this command takes no arguments
         {
-            // let's trigger a typing indicator to let
-            // users know we're working
             await ctx.TriggerTypingAsync();
-
-            // let's make the message a bit more colourful
             var emoji = DiscordEmoji.FromName(ctx.Client, ":ping_pong:");
-            
             await ctx.RespondAsync($"{emoji} Pong! Ping: {ctx.Client.Ping}ms");
         }
 
@@ -96,8 +94,8 @@ namespace MatronBot.Commands {
         // }
         
         [Command("Rate")]
-        public async Task Rate(CommandContext ctx, params string[] question) {
-            
+        public async Task Rate(CommandContext ctx, params string[] question)
+        {
             var desc = string.Empty;
 
             foreach (var word in question) {
@@ -107,11 +105,15 @@ namespace MatronBot.Commands {
             var embed = new DiscordEmbedBuilder {
                 Title = "RATE THIS:",
                 Description = desc,
-                Color = DiscordColor.Gold
+                Color = DiscordColor.Gold,
+                Footer = new DiscordEmbedBuilder.EmbedFooter()
+                {
+                    Text = $"created by {ctx.User.Username}"
+                }
             };
             
             var interactivity = ctx.Client.GetInteractivity();
-            
+
             var message = await ctx.Channel.SendMessageAsync(embed: embed).ConfigureAwait(false);
             
             var one = DiscordEmoji.FromName(ctx.Client, ":one:");
@@ -157,6 +159,42 @@ namespace MatronBot.Commands {
                 x.User == ctx.User &&
                 (x.Emoji == thumbsUpEmoji || x.Emoji == thumbsDownEmoji))
                 .ConfigureAwait(false);
+        }
+
+        [Command("ChuckNorris")]
+        public async Task ChuckNorris(CommandContext ctx)
+        {
+            var embed = new DiscordEmbedBuilder();
+            
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/random"),
+                Headers =
+                {
+                    { "accept", "application/json" },
+                    { "x-rapidapi-host", "matchilling-chuck-norris-jokes-v1.p.rapidapi.com" },
+                    { "x-rapidapi-key", "d4fb28a3bcmsh7093e7053332b49p1b175djsn941b19407903" },
+                }
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                var chuckJoke = JsonSerializer.Deserialize<ChuckNorris>(body);
+                embed.Title = "Chuck Norris";
+                embed.Description = chuckJoke.value;
+                embed.Color = DiscordColor.Orange;
+                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Height = 50,
+                    Url = chuckJoke.icon_url,
+                    Width = 50
+                };
+            }
+
+            await ctx.Channel.SendMessageAsync(embed);
         }
     }
 }

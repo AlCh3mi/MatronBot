@@ -15,58 +15,6 @@ using Newtonsoft.Json;
 namespace MatronBot.Commands {
     public class ApexCommands : BaseCommandModule {
         
-        Dictionary<string, int> apexWins = new Dictionary<string, int>();
-        readonly string savePath = Path.Combine(Directory.GetCurrentDirectory(), "ApexWins.orphan");
-        
-        [Command("ApexWin")]
-        [Description("Register your win on the current monthly leaderboard. Check apexLeaderboard command to see rankings.")]
-        public async Task ApexWin(CommandContext ctx) {
-
-            if (apexWins.ContainsKey(ctx.User.Username)) {
-                
-                apexWins[ctx.User.Username] += 1;
-            }
-            else {
-                apexWins.Add(ctx.User.Username, 1);
-            }
-
-            await ctx.Member.SendMessageAsync($"Wins : {apexWins[ctx.User.Username]}").ConfigureAwait(false);
-            await Save(savePath);
-        }
-
-        [Command("ApexLeaderboard")]
-        [Description("Displays all current players entered to this months leaderboard and their registered wins. Post your proof in #apexwin-screenshots")]
-        public async Task ApexLeaderboard(CommandContext ctx) {
-            await ctx.Channel.SendMessageAsync("Apex wins: ");
-
-            StringBuilder sb = new StringBuilder();
-            
-            foreach (var entry in apexWins) {
-                sb.Append($"{entry.Value} : {entry.Key} \n");
-            }
-            await ctx.Channel.SendMessageAsync(sb.ToString()).ConfigureAwait(false);
-        }
-
-        [Command("ApexReset")]
-        [RequireRoles(RoleCheckMode.All, "Orphan", "Apex")]
-        public async Task ApexLeaderBoardReset(CommandContext ctx) {
-            apexWins = new Dictionary<string, int>();
-            await ctx.Channel.SendMessageAsync("Apex Leaderboard Reset").ConfigureAwait(false);
-            await Save(savePath);
-        }
-
-        [Command("ApexLoad")]
-        public async Task ApexLoad(CommandContext ctx) {
-            await Load(savePath);
-            await ctx.Channel.SendMessageAsync("Apex Wins Loaded");
-        }
-
-        [Command("ApexSave")]
-        public async Task ApexSave(CommandContext ctx) {
-            await Save(savePath);
-            await ctx.Channel.SendMessageAsync($"Apex Wins Saved to {savePath}");
-        }
-
         [Command("ApexMap")]
         [Description("Provides Current Apex map rotation info. Optionally \"pubs\" \"arenas\" and \"ranked\" can be added for more detailed info.")]
         public async Task ApexMap(CommandContext ctx, string mode = "all") {
@@ -113,17 +61,6 @@ namespace MatronBot.Commands {
 
             await ctx.Channel.SendMessageAsync(playerInfo.Stats.Global.ToString());
             await ctx.Channel.SendMessageAsync(playerInfo.Stats.RealTime.ToString());
-        }
-
-        async Task Save(string path) {
-            await using var sw = new StreamWriter(path);
-            await sw.WriteAsync(JsonConvert.SerializeObject(apexWins));
-        }
-
-        async Task Load(string path) {
-            using var sr = new StreamReader(path);
-            var tmp = await sr.ReadToEndAsync().ConfigureAwait(false);
-            apexWins = JsonConvert.DeserializeObject<Dictionary<string, int>>(tmp);
         }
     }
 }
