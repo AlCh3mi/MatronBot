@@ -13,7 +13,35 @@ namespace MatronBot.Commands
         public async Task Sortie(CommandContext ctx)
         {
             var warframeStatApi = new WarframeStatApi(Platform.Pc);
-            await ctx.Channel.SendMessageAsync(warframeStatApi.Sortie().ToString());
+            var sortie = warframeStatApi.Sortie();
+            
+            await ctx.Channel.SendMessageAsync($"{sortie.faction} Sortie : {sortie.eta}");
+
+            var embedSortie1 = new DiscordEmbedBuilder
+            {
+                Title = $"Sortie 1: {sortie.variants[0].missionType} : {sortie.variants[0].node}",
+                Description = $"{sortie.variants[0].modifier}",
+                Color = DiscordColor.White
+            };
+            
+            var embedSortie2 = new DiscordEmbedBuilder
+            {
+                Title = $"Sortie 2: {sortie.variants[1].missionType} : {sortie.variants[1].node}",
+                Description = $"{sortie.variants[1].modifier}",
+                Color = DiscordColor.CornflowerBlue
+            };
+            
+            var embedSortie3 = new DiscordEmbedBuilder
+            {
+                Title = $"Sortie 3: {sortie.variants[2].missionType} : {sortie.variants[2].node}",
+                Description = $"{sortie.variants[2].modifier}",
+                Color = DiscordColor.MidnightBlue
+            };
+
+            await ctx.Channel.SendMessageAsync(embedSortie1);
+            await ctx.Channel.SendMessageAsync(embedSortie2);
+            await ctx.Channel.SendMessageAsync(embedSortie3);
+
         }
         
         [Command("Arbitration")]
@@ -22,7 +50,7 @@ namespace MatronBot.Commands
             var warframeStatApi = new WarframeStatApi(Platform.Pc);
             var arbitration = warframeStatApi.Arbitration();
             
-            var embedBuilder = new DiscordEmbedBuilder()
+            var embedBuilder = new DiscordEmbedBuilder
             {
                 Title = "Arbitration",
                 Description = $"{arbitration.type} on {arbitration.node}",
@@ -40,7 +68,14 @@ namespace MatronBot.Commands
             {
                 sb.AppendLine(fissure.ToString());
             }
-            await ctx.Channel.SendMessageAsync(sb.ToString());
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Title = "Fissures",
+                Description = sb.ToString(),
+                Color = DiscordColor.IndianRed
+            };
+            await ctx.Channel.SendMessageAsync(embed);
         }
         
         [Command("Baro")]
@@ -69,7 +104,6 @@ namespace MatronBot.Commands
                 };
                 await ctx.Channel.SendMessageAsync(embed);
             }
-            
         }
     }
 }
