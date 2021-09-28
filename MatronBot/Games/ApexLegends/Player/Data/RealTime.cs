@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MatronBot.ApexLegends.Player.Data {
+namespace MatronBot.Games.ApexLegends.Player.Data {
     public class RealTime {
         [JsonProperty("lobbyState")] public string LobbyState { get; private set; }
         [JsonProperty("isOnline")] public int IsOnline { get; private set; }

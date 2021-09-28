@@ -1,4 +1,4 @@
-﻿namespace MatronBot.ApexLegends.Map.Data {
+﻿namespace MatronBot.Games.ApexLegends.Map.Data {
     public class GameMode {
         public Map Current;
         public Map Next;

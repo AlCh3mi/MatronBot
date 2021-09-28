@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using MatronBot.ApexLegends;
-using MatronBot.ApexLegends.Map;
-using MatronBot.ApexLegends.Map.Data;
-using MatronBot.ApexLegends.Player;
+using MatronBot.Games.ApexLegends;
+using MatronBot.Games.ApexLegends.Map;
+using MatronBot.Games.ApexLegends.Map.Data;
+using MatronBot.Games.ApexLegends.Player;
 using Newtonsoft.Json;
 
 namespace MatronBot.Commands {

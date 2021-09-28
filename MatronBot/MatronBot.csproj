@@ -11,4 +11,8 @@
       <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-rc2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Games" />
+    </ItemGroup>
+
 </Project>

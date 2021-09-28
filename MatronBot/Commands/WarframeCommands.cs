@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using MatronBot.Warframe;
+using MatronBot.Games.Warframe;
 
 namespace MatronBot.Commands
 {

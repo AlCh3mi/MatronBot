@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace MatronBot.ApexLegends {
+namespace MatronBot.Games.ApexLegends {
     public struct ConfigJson {
         [JsonProperty("auth")] public string Auth { get; private set; }
         

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 
-namespace MatronBot.Warframe.WorldState
+namespace MatronBot.Games.Warframe.WorldState
 {
     public class Sortie
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using MatronBot.Jokes;
+using MatronBot.Trivia;
 
 namespace MatronBot.Commands {
     public class FunCommands : BaseCommandModule {
@@ -195,6 +197,54 @@ namespace MatronBot.Commands {
             }
 
             await ctx.Channel.SendMessageAsync(embed);
+        }
+
+        [Command("Trivia")]
+        public async Task Trivia(CommandContext ctx)
+        {
+            var response = new TriviaApi().Request("https://opentdb.com/api.php?amount=1");
+            var triviaResponse = JsonSerializer.Deserialize<Response>(response);
+
+            switch (triviaResponse?.results[0].type)
+            {
+                case "multiple":
+                    var choices = RandomAnswers(triviaResponse.results[0].correct_answer,
+                        triviaResponse.results[0].incorrect_answers);
+
+                    var desc = "";
+                    foreach (var choice in choices)
+                    {
+                        desc += $"{choice} \n";
+                    }
+                    
+                    var multipleQuestion = new DiscordEmbedBuilder
+                    {
+                        Title = $"{triviaResponse.results[0].category} ({triviaResponse.results[0].difficulty})",
+                        Description = $"Multiple Choice: {triviaResponse?.results[0].question} \n \n" + desc,
+                        Color = DiscordColor.SapGreen,
+                    };
+                    await ctx.Channel.SendMessageAsync(multipleQuestion);
+                    break;
+                case "boolean":
+                    var booleanQuestion = new DiscordEmbedBuilder
+                    {
+                        Title = $"{triviaResponse.results[0].category} ({triviaResponse.results[0].difficulty})",
+                        Description = $"True or False: {triviaResponse?.results[0].question}",
+                        Color = DiscordColor.SapGreen,
+                    };
+                    await ctx.Channel.SendMessageAsync(booleanQuestion);
+                    break;
+            }
+            
+            await ctx.Channel.SendMessageAsync($"||{triviaResponse?.results[0].correct_answer}||");
+        }
+
+        private List<string> RandomAnswers(string correctAnswer, string[] incorrectAnswers)
+        {
+            var random = new Random();
+            var randomisedAnswers = new List<string>(incorrectAnswers);
+            randomisedAnswers.Insert(random.Next(4), correctAnswer);
+            return randomisedAnswers;
         }
     }
 }

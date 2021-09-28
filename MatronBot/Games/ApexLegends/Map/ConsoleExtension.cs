@@ -1,7 +1,7 @@
 ﻿using System;
-using MatronBot.ApexLegends.Map.Data;
+using MatronBot.Games.ApexLegends.Map.Data;
 
-namespace MatronBot.ApexLegends.Map {
+namespace MatronBot.Games.ApexLegends.Map {
     public static class ConsoleExtension {
         
         public static void NavigateWithConsole(this MapInfo mapInfo) {

@@ -1,4 +1,4 @@
-﻿namespace MatronBot.Warframe
+﻿namespace MatronBot.Games.Warframe
 {
     public static class GetRequests
     {

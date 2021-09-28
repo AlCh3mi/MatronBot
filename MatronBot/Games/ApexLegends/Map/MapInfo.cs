@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using MatronBot.ApexLegends.Map.Data;
+using MatronBot.Games.ApexLegends.Map.Data;
 using Newtonsoft.Json;
 
-namespace MatronBot.ApexLegends.Map {
+namespace MatronBot.Games.ApexLegends.Map {
     public class MapInfo {
         public readonly Dictionary<string, GameMode> Modes;
         

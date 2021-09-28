@@ -2,9 +2,9 @@
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MatronBot.Warframe.WorldState;
+using MatronBot.Games.Warframe.WorldState;
 
-namespace MatronBot.Warframe
+namespace MatronBot.Games.Warframe
 {
     public class WarframeStatApi
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MatronBot.ApexLegends.Player.Data {
+namespace MatronBot.Games.ApexLegends.Player.Data {
     public class Global {
         [JsonProperty("name")] public string Name { get; private set; }
         [JsonProperty("uid")] public long Uid { get; private set; }

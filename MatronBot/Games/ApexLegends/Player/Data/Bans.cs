@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MatronBot.ApexLegends.Player.Data {
+namespace MatronBot.Games.ApexLegends.Player.Data {
     public class Bans {
         [JsonProperty("isActive")] public bool IsActive { get; private set; }
         [JsonProperty("remainingSeconds")] public int RemainingSeconds { get; private set; }
