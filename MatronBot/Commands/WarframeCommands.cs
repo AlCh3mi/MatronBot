@@ -92,6 +92,15 @@ namespace MatronBot.Commands
                     Description = $"is currently on {baro.location}",
                     Color = DiscordColor.Purple
                 };
+
+                var items = string.Empty;
+                
+                foreach (var item in baro.inventory)
+                {
+                    items += $"\n{item.item} \n{item.credits} \n{item.ducats}";
+                }
+
+                embed.Description += items;
                 await ctx.Channel.SendMessageAsync(embed);
             }
             else
@@ -99,7 +108,7 @@ namespace MatronBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{baro.character}",
-                    Description = $"will be here in  {baro.startString}",
+                    Description = $"will be here in {baro.startString}",
                     Color = DiscordColor.Purple
                 };
                 await ctx.Channel.SendMessageAsync(embed);
