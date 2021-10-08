@@ -97,7 +97,7 @@ namespace MatronBot.Commands
                 
                 foreach (var item in baro.inventory)
                 {
-                    items += $"\n{item.item} \n{item.credits} \n{item.ducats}";
+                    items += $"\n{item.item} Credits:{item.credits} Ducats:{item.ducats}";
                 }
 
                 embed.Description += items;
