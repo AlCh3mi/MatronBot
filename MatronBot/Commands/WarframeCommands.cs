@@ -89,7 +89,7 @@ namespace MatronBot.Commands
                 var embed = new DiscordEmbedBuilder
                 {
                     Title = $"{baro.character}",
-                    Description = $"is currently on {baro.location}",
+                    Description = $"is currently on {baro.location}\n",
                     Color = DiscordColor.Purple
                 };
 
@@ -97,7 +97,7 @@ namespace MatronBot.Commands
                 
                 foreach (var item in baro.inventory)
                 {
-                    items += $"\n{item.item} Credits:{item.credits} Ducats:{item.ducats}";
+                    items += $"\n{item.item} \tCredits:{item.credits} \tDucats:{item.ducats}\n";
                 }
 
                 embed.Description += items;
