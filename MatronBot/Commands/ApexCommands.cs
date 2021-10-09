@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using DSharpPlus.Entities;
 using MatronBot.Games.ApexLegends;
 using MatronBot.Games.ApexLegends.Map;
 using MatronBot.Games.ApexLegends.Map.Data;
 using MatronBot.Games.ApexLegends.Player;
-using Newtonsoft.Json;
+using MatronBot.Games.ApexLegends.Player.Data;
 
 namespace MatronBot.Commands {
     public class ApexCommands : BaseCommandModule {
@@ -59,8 +55,34 @@ namespace MatronBot.Commands {
             var response = api.Request($"https://api.mozambiquehe.re/bridge?platform=PC&player={playerName}&auth={api.Config.Auth}");
             var playerInfo = new Info(response);
 
-            await ctx.Channel.SendMessageAsync(playerInfo.Stats.Global.ToString());
-            await ctx.Channel.SendMessageAsync(playerInfo.Stats.RealTime.ToString());
+            var discordEmbedBuilder = new DiscordEmbedBuilder
+            {
+                Title = $"{playerInfo.Stats.Global.Name}",
+                Description = $"{playerInfo.Stats.Global.Rank.RankName} {playerInfo.Stats.Global.Rank.RankDiv} - ({playerInfo.Stats.Global.Rank.RankScore})",
+                Color = playerInfo.Stats.RealTime.IsOnline == 1? DiscordColor.Green : DiscordColor.Red,
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    IconUrl = playerInfo.Stats.Global.Avatar,
+                    Text = $"UID: {playerInfo.Stats.Global.Uid}"
+                },
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Height = 100,
+                    Width = 100,
+                    Url = playerInfo.Stats.Global.Rank.RankImage
+                }
+            };
+
+            discordEmbedBuilder.AddField("Legend", playerInfo.Stats.RealTime.SelectedLegend);
+            
+            if (playerInfo.Stats.RealTime.IsOnline != 0)
+            {
+                discordEmbedBuilder.AddField("Party Full", playerInfo.Stats.RealTime.PartyFull == 1 ? "Yes" : "No", true);
+                discordEmbedBuilder.AddField("In Game", playerInfo.Stats.RealTime.IsInGame == 1 ? "Yes" : "No", true);
+                discordEmbedBuilder.AddField("Can Join", playerInfo.Stats.RealTime.CanJoin == 1 ? "Yes" : "No", true);
+            }
+
+            await ctx.Channel.SendMessageAsync(discordEmbedBuilder);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace MatronBot {
         public CommandsNextExtension Commands { get; private set; }
         public async Task RunAsync() {
 
-            var json = string.Empty;
+            string json;
             
             await using (var fs = File.OpenRead("config.json"))
                 using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
@@ -45,7 +45,7 @@ namespace MatronBot {
             
             var commandsConfig = new CommandsNextConfiguration() 
             {
-                StringPrefixes = new string[] {configJson.Prefix},
+                StringPrefixes = new [] {configJson.Prefix},
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 DmHelp = true
