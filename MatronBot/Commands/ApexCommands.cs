@@ -6,7 +6,6 @@ using MatronBot.Games.ApexLegends;
 using MatronBot.Games.ApexLegends.Map;
 using MatronBot.Games.ApexLegends.Map.Data;
 using MatronBot.Games.ApexLegends.Player;
-using MatronBot.Games.ApexLegends.Player.Data;
 
 namespace MatronBot.Commands {
     public class ApexCommands : BaseCommandModule {
@@ -43,7 +42,18 @@ namespace MatronBot.Commands {
                     break;
                 
                 default:
-                    await ctx.Channel.SendMessageAsync(mapInfo.ToString());
+                    var discordEmbedBuilder = new DiscordEmbedBuilder
+                    {
+                        Title = $"Apex Map Rotation",
+                        Color = DiscordColor.NotQuiteBlack,
+                    };
+
+                    foreach (var mapInfoMode in mapInfo.Modes)
+                    {
+                        discordEmbedBuilder.AddField($"{mapInfoMode.Key}: {mapInfoMode.Value.Current}. ",
+                            $"Next: {mapInfoMode.Value.Next}");
+                    }
+                    await ctx.Channel.SendMessageAsync(discordEmbedBuilder);
                     break;
             }
         }
@@ -67,8 +77,6 @@ namespace MatronBot.Commands {
                 },
                 Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
                 {
-                    Height = 100,
-                    Width = 100,
                     Url = playerInfo.Stats.Global.Rank.RankImage
                 }
             };
